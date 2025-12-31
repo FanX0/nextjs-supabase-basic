@@ -21,10 +21,16 @@ export default async function DashboardLayout({
     redirect("/login");
   }
 
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("full_name, avatar_url")
+    .eq("id", user.id)
+    .single();
+
   return (
     <div className="flex h-screen bg-gray-100 dark:bg-gray-900">
       <RealtimeSubscriptionListener />
-      <SideNav user={user} />
+      <SideNav user={user} profile={profile} />
       <main className="flex-1 overflow-y-auto p-8">{children}</main>
     </div>
   );

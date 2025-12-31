@@ -5,8 +5,22 @@ import { usePathname } from "next/navigation";
 import { signOut } from "@/features/auth/auth.actions";
 import { User } from "@supabase/supabase-js";
 
-export function SideNav({ user }: { user: User }) {
+export type SideNavProps = {
+  user: User;
+  profile?: {
+    full_name: string | null;
+    avatar_url: string | null;
+    email?: string;
+  } | null;
+};
+
+export function SideNav({ user, profile }: SideNavProps) {
   const pathname = usePathname();
+
+  const displayName =
+    profile?.full_name || user.user_metadata?.full_name || "User";
+  const displayAvatar = profile?.avatar_url || user.user_metadata?.avatar_url;
+  const displayEmail = user.email;
 
   return (
     <aside className="w-64 bg-white dark:bg-gray-800 shadow-md flex flex-col h-full">
@@ -21,22 +35,22 @@ export function SideNav({ user }: { user: User }) {
 
       {/* User Info / Avatar Section */}
       <div className="p-4 border-b dark:border-gray-700 flex items-center space-x-3">
-        {user.user_metadata?.avatar_url ? (
+        {displayAvatar ? (
           <img
-            src={user.user_metadata.avatar_url}
+            src={displayAvatar}
             alt="User Avatar"
             className="w-10 h-10 rounded-full object-cover border border-gray-200 dark:border-gray-600"
           />
         ) : (
           <div className="w-10 h-10 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
-            {user.email?.[0].toUpperCase() || "U"}
+            {displayEmail?.[0].toUpperCase() || "U"}
           </div>
         )}
         <div className="overflow-hidden">
           <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
-            {user.user_metadata?.full_name || "User"}
+            {displayName}
           </p>
-          <p className="text-xs text-gray-500 truncate">{user.email}</p>
+          <p className="text-xs text-gray-500 truncate">{displayEmail}</p>
         </div>
       </div>
 

@@ -18,3 +18,9 @@ export async function getPublicProjects(): Promise<ProjectWithAuthor[]> {
 
   return (data as ProjectWithAuthor[]) || [];
 }
+
+export async function getPublicCategories() {
+  const supabase = createClient();
+  const { data } = await supabase.from("categories").select("*").order("name");
+  return data || [];
+}
