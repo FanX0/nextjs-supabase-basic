@@ -49,16 +49,17 @@ export async function POST(req: Request) {
         status = subscription.status;
         customerId = subscription.customer as string;
         // Validating subscription data
-        if (!subscription || !subscription.current_period_end) {
-          console.warn(
-            "Subscription data missing current_period_end, defaulting to 30 days."
-          );
-          current_period_end = new Date(
-            Date.now() + 1000 * 60 * 60 * 24 * 30
-          ).toISOString();
-        } else {
+        try {
+          if (!subscription || !subscription.current_period_end) {
+            throw new Error("Missing date");
+          }
           current_period_end = new Date(
             subscription.current_period_end * 1000
+          ).toISOString();
+        } catch (e) {
+          console.warn("Date parsing failed, defaulting to 30 days:", e);
+          current_period_end = new Date(
+            Date.now() + 1000 * 60 * 60 * 24 * 30
           ).toISOString();
         }
       } else if (session.mode === "payment") {
