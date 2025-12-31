@@ -48,9 +48,19 @@ export async function POST(req: Request) {
         subscriptionId = subscription.id;
         status = subscription.status;
         customerId = subscription.customer as string;
-        current_period_end = new Date(
-          subscription.current_period_end * 1000
-        ).toISOString();
+        // Validating subscription data
+        if (!subscription || !subscription.current_period_end) {
+          console.warn(
+            "Subscription data missing current_period_end, defaulting to 30 days."
+          );
+          current_period_end = new Date(
+            Date.now() + 1000 * 60 * 60 * 24 * 30
+          ).toISOString();
+        } else {
+          current_period_end = new Date(
+            subscription.current_period_end * 1000
+          ).toISOString();
+        }
       } else if (session.mode === "payment") {
         // Lifetime Deal
         subscriptionId = `lifetime_${session.id}`; // Fake ID for internal use

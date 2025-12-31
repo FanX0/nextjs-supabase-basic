@@ -95,6 +95,14 @@ export function SideNav({ user, profile }: SideNavProps) {
         >
           Admin Panel
         </Link>
+        <div className="pt-4 mt-4 border-t border-gray-100 dark:border-gray-700">
+          <Link
+            href="/"
+            className="block px-4 py-2 text-gray-600 dark:text-gray-400 hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
+          >
+            &larr; Back to Home
+          </Link>
+        </div>
       </nav>
 
       <div className="p-4 border-t dark:border-gray-700">
