@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { headers } from "next/headers";
 
 import { createClient } from "@/lib/supabase/server";
 import { LoginInput, RegisterInput } from "./auth.schema";
@@ -45,10 +46,13 @@ export async function signOut() {
 export async function resetPasswordForEmail(email: string) {
   const supabase = await createClient();
 
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const origin = `${protocol}://${host}`;
+
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${
-      process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-    }/api/auth/callback?next=/update-password`,
+    redirectTo: `${origin}/api/auth/callback?next=/update-password`,
   });
 
   if (error) {
@@ -78,12 +82,19 @@ export async function updateUserPassword(password: string) {
 
 export async function loginWithOAuth(provider: "google" | "github") {
   const supabase = await createClient();
+  /*
+   * Dynamic Origin for Production/Preview/Development
+   * This logic avoids hardcoding process.env.NEXT_PUBLIC_APP_URL, which might be missing at build time.
+   */
+  const headersList = await headers();
+  const host = headersList.get("host");
+  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const origin = `${protocol}://${host}`;
+
   const { data, error } = await supabase.auth.signInWithOAuth({
     provider,
     options: {
-      redirectTo: `${
-        process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000"
-      }/api/auth/callback`,
+      redirectTo: `${origin}/api/auth/callback`,
     },
   });
 
