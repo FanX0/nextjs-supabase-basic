@@ -84,11 +84,11 @@ export async function loginWithOAuth(provider: "google" | "github") {
   const supabase = await createClient();
   /*
    * Dynamic Origin for Production/Preview/Development
-   * This logic avoids hardcoding process.env.NEXT_PUBLIC_APP_URL, which might be missing at build time.
+   * We prioritize "x-forwarded-host" because Vercel/proxies set this to the real domain.
    */
   const headersList = await headers();
-  const host = headersList.get("host");
-  const protocol = process.env.NODE_ENV === "development" ? "http" : "https";
+  const host = headersList.get("x-forwarded-host") || headersList.get("host");
+  const protocol = headersList.get("x-forwarded-proto") || "https";
   const origin = `${protocol}://${host}`;
 
   const { data, error } = await supabase.auth.signInWithOAuth({

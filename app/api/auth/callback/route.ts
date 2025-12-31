@@ -24,18 +24,29 @@ export async function GET(request: Request) {
     }
   }
 
-  // return the user to an error page with instructions
+  // Handle specific error cases or general failure
+  const errorCode = "auth_code_exchange_failed";
+  const forwardingError =
+    searchParams.get("error_description") || "Unknown error";
+
   // return the user to an error page with instructions
   const forwardedHost = request.headers.get("x-forwarded-host");
   const isLocalEnv = process.env.NODE_ENV === "development";
+  const errorUrlParams = `?error=${errorCode}&message=${encodeURIComponent(
+    forwardingError
+  )}`;
 
   if (isLocalEnv) {
-    return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    return NextResponse.redirect(
+      `${origin}/auth/auth-code-error${errorUrlParams}`
+    );
   } else if (forwardedHost) {
     return NextResponse.redirect(
-      `https://${forwardedHost}/auth/auth-code-error`
+      `https://${forwardedHost}/auth/auth-code-error${errorUrlParams}`
     );
   } else {
-    return NextResponse.redirect(`${origin}/auth/auth-code-error`);
+    return NextResponse.redirect(
+      `${origin}/auth/auth-code-error${errorUrlParams}`
+    );
   }
 }
