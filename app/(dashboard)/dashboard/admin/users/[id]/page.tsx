@@ -44,12 +44,6 @@ export default function AdminUserDetailsPage({
   const [currentUserRole, setCurrentUserRole] = useState<string | null>(null);
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);
 
-  useEffect(() => {
-    params.then((unwrappedParams) => {
-      setUserId(unwrappedParams.id);
-    });
-  }, [params]);
-
   console.log("Admin User Details Page Rendered", userId);
 
   useEffect(() => {

@@ -7,10 +7,11 @@ import { ProjectCategoryFilter } from "@/components/projects/ProjectCategoryFilt
 import { Project } from "@/features/projects/project.types";
 
 type Props = {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function ProjectsPage({ searchParams }: Props) {
+export default async function ProjectsPage(props: Props) {
+  const searchParams = await props.searchParams;
   const categoryId =
     typeof searchParams.category === "string"
       ? searchParams.category
