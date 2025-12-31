@@ -7,6 +7,8 @@ export async function GET(request: Request) {
   // if "next" is in param, use it as the redirect URL
   const next = searchParams.get("next") ?? "/dashboard";
 
+  let genericError = "Unknown error";
+
   if (code) {
     const supabase = await createClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
@@ -21,13 +23,15 @@ export async function GET(request: Request) {
       } else {
         return NextResponse.redirect(`${origin}${next}`);
       }
+    } else {
+      console.error("Auth Error:", error);
+      genericError = error.message;
     }
   }
 
   // Handle specific error cases or general failure
   const errorCode = "auth_code_exchange_failed";
-  const forwardingError =
-    searchParams.get("error_description") || "Unknown error";
+  const forwardingError = searchParams.get("error_description") || genericError;
 
   // return the user to an error page with instructions
   const forwardedHost = request.headers.get("x-forwarded-host");
