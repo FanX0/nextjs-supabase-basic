@@ -29,6 +29,11 @@ export async function signup(data: RegisterInput) {
   });
 
   if (error) {
+    // If user already exists, we still want to show the success message (Security/Privacy)
+    // and potentially Supabase sent a "Magic Link" or "Already Registered" email if configured.
+    if (error.message.includes("User already registered")) {
+      redirect("/login?success=Check your email to verify your account");
+    }
     redirect("/register?error=" + encodeURIComponent(error.message));
   }
 
