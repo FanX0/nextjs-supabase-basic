@@ -27,6 +27,29 @@ export function UserStats({ totalProjects, subscription }: UserStatsProps) {
             {isPro ? "Pro Plan" : "Free Plan"}
           </span>
         </div>
+        {isPro && subscription?.current_period_end && (
+          <div className="flex justify-between items-center mb-2">
+            <span
+              className={`text-sm font-medium ${
+                subscription.cancel_at_period_end
+                  ? "text-red-500"
+                  : "text-gray-500 dark:text-gray-400"
+              }`}
+            >
+              {subscription.cancel_at_period_end ? "Expires on" : "Renews on"}
+            </span>
+            <span className="text-sm font-bold text-gray-900 dark:text-gray-100">
+              {new Date(subscription.current_period_end).toLocaleDateString(
+                undefined,
+                {
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                }
+              )}
+            </span>
+          </div>
+        )}
 
         <div className="flex justify-between items-center mb-2 mt-4">
           <span className="text-sm font-medium text-gray-500 dark:text-gray-400">
