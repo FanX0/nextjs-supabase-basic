@@ -67,7 +67,7 @@ export default async function DashboardPage() {
             {!subscription && (projectCount || 0) >= 2 ? (
               <Link
                 href="/pricing"
-                className="px-4 py-2 bg-gradient-to-r from-indigo-500 to-purple-500 text-white rounded hover:from-indigo-600 hover:to-purple-600 transition shadow-md flex items-center"
+                className="px-4 py-2 bg-linear-to-r from-indigo-500 to-purple-500 text-white rounded hover:from-indigo-600 hover:to-purple-600 transition shadow-md flex items-center"
               >
                 <span className="mr-2">🚀</span> Upgrade to Create
               </Link>

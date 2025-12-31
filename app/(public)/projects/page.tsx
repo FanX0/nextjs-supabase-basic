@@ -78,7 +78,7 @@ export default function PublicProjectsPage() {
                   {project.description || "No description provided."}
                 </p>
                 <div className="mt-4 flex items-center pt-4 border-t border-gray-100 dark:border-gray-700">
-                  <div className="flex-shrink-0">
+                  <div className="shrink-0">
                     {project.profiles?.avatar_url ? (
                       <img
                         src={project.profiles.avatar_url}
@@ -86,7 +86,7 @@ export default function PublicProjectsPage() {
                         className="h-8 w-8 rounded-full object-cover"
                       />
                     ) : (
-                      <span className="inline-block h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center font-bold">
+                      <span className="flex h-8 w-8 rounded-full bg-indigo-100 text-indigo-600 items-center justify-center font-bold">
                         {project.profiles?.full_name?.[0] || "U"}
                       </span>
                     )}

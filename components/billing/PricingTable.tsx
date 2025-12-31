@@ -172,7 +172,7 @@ export function PricingTable({ subscription }: PricingTableProps) {
         </div>
 
         {/* Lifetime Plan */}
-        <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl shadow-xl border border-gray-700 p-8 flex flex-col relative overflow-hidden group">
+        <div className="bg-linear-to-br from-gray-900 to-gray-800 rounded-2xl shadow-xl border border-gray-700 p-8 flex flex-col relative overflow-hidden group">
           <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition duration-500" />
           <h3 className="text-xl font-bold text-white">Lifetime</h3>
           <p className="text-gray-400 mt-2">Pay once, own it forever.</p>

@@ -8,6 +8,8 @@ import { resend } from "@/lib/resend";
 import SubscriptionSuccessEmail from "@/components/emails/SubscriptionSuccessEmail";
 import InvoiceEmail from "@/components/emails/InvoiceEmail";
 
+import { StripeSubscription } from "@/types/stripe";
+
 export async function POST(req: Request) {
   const body = await req.text();
   const signature = (await headers()).get("Stripe-Signature") as string;
@@ -42,7 +44,7 @@ export async function POST(req: Request) {
       if (session.mode === "subscription") {
         const subscription = (await stripe.subscriptions.retrieve(
           session.subscription as string
-        )) as Stripe.Subscription;
+        )) as unknown as StripeSubscription;
         subscriptionId = subscription.id;
         status = subscription.status;
         customerId = subscription.customer as string;
@@ -153,10 +155,10 @@ export async function POST(req: Request) {
       }
 
       // Retrieve the subscription details from Stripe
-      const subscription = await stripe.subscriptions.retrieve(
+      const subscription = (await stripe.subscriptions.retrieve(
         // @ts-ignore
         invoice.subscription as string
-      );
+      )) as unknown as StripeSubscription;
 
       // Update the period end date and price_id
       const { error } = await adminClient
@@ -230,7 +232,7 @@ export async function POST(req: Request) {
       // Fetch fresh data to ensure we have the latest status/period
       const subscription = (await stripe.subscriptions.retrieve(
         eventSubscription.id
-      )) as Stripe.Subscription;
+      )) as unknown as StripeSubscription;
 
       const { error } = await adminClient
         .from("subscriptions")

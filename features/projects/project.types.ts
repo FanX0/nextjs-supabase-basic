@@ -5,5 +5,6 @@ export type Project = Database["public"]["Tables"]["projects"]["Row"] & {
     name: string;
     color: string | null;
   } | null;
+  category_id: string | null;
 };
 export type NewProject = Database["public"]["Tables"]["projects"]["Insert"];

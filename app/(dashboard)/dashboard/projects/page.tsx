@@ -52,7 +52,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
           {isLimitReached ? (
             <Link
               href="/pricing"
-              className="bg-gradient-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded transition flex items-center shadow-md"
+              className="bg-linear-to-r from-indigo-500 to-purple-500 hover:from-indigo-600 hover:to-purple-600 text-white font-bold py-2 px-4 rounded transition flex items-center shadow-md"
             >
               <span className="mr-2">🚀</span> Upgrade to Create
             </Link>

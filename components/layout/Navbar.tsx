@@ -33,7 +33,7 @@ export function Navbar() {
     <nav className="fixed w-full z-50 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md border-b border-gray-100 dark:border-gray-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between h-16 items-center">
-          <div className="flex-shrink-0 flex items-center">
+          <div className="shrink-0 flex items-center">
             <Link href="/" className="text-xl font-bold text-primary">
               SaaS<span className="text-indigo-600">Starter</span>
             </Link>
@@ -106,7 +106,7 @@ export function Navbar() {
             {user ? (
               <Link
                 href="/dashboard"
-                className="text-indigo-600 block px-3 py-2 rounded-md text-base font-medium font-bold"
+                className="text-indigo-600 block px-3 py-2 rounded-md text-base font-bold"
                 onClick={() => setIsOpen(false)}
               >
                 Go to Dashboard
