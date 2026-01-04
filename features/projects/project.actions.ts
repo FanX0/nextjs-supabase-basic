@@ -13,7 +13,10 @@ import {
 import { resend } from "@/lib/resend";
 import ProjectCreatedEmail from "@/components/emails/ProjectCreatedEmail";
 
-export async function createProject(data: CreateProjectInput) {
+export async function createProject(
+  data: CreateProjectInput,
+  ownerId?: string
+) {
   const supabase = await createClient();
 
   const {
@@ -30,15 +33,6 @@ export async function createProject(data: CreateProjectInput) {
     throw new Error("Invalid input data");
   }
 
-  // 1. Check Project Limits (Pro Feature)
-  // Get active subscription
-  const { data: subscription } = await supabase
-    .from("subscriptions")
-    .select("status")
-    .in("status", ["trialing", "active"])
-    .eq("user_id", user.id)
-    .maybeSingle();
-
   // Check for Admin Role and get details
   const { data: profile } = await supabase
     .from("profiles")
@@ -47,19 +41,34 @@ export async function createProject(data: CreateProjectInput) {
     .single();
 
   const isAdmin = profile?.role === "admin" || profile?.role === "super_admin";
+
+  // Determine target user ID
+  const targetUserId = ownerId && isAdmin ? ownerId : user.id;
+
+  // 1. Check Project Limits (Pro Feature) - Check for TARGET user
+  // Get active subscription
+  const { data: subscription } = await supabase
+    .from("subscriptions")
+    .select("status")
+    .in("status", ["trialing", "active"])
+    .eq("user_id", targetUserId)
+    .maybeSingle();
+
+  // "isPro" applies if the TARGET user has a sub OR if the ACTOR is an admin (Admins bypass limits for themselves, but maybe not when creating for free users? Actually admins should be able to create unlimited projects for anyone).
+  // Let's say Admins bypass limits always.
   const isPro = !!subscription || isAdmin;
 
-  // Get current project count
+  // Get current project count for TARGET user
   const { count: projectCount } = await supabase
     .from("projects")
     .select("*", { count: "exact", head: true })
-    .eq("user_id", user.id);
+    .eq("user_id", targetUserId);
 
   const MAX_FREE_PROJECTS = 2;
 
   if (!isPro && (projectCount || 0) >= MAX_FREE_PROJECTS) {
     throw new Error(
-      "Free Plan Limit Reached: You can only create 2 projects. Upgrade to Pro for unlimited projects."
+      "Free Plan Limit Reached: User can only create 2 projects."
     );
   }
 
@@ -70,7 +79,7 @@ export async function createProject(data: CreateProjectInput) {
       description: result.data.description,
       image_url: result.data.image_url,
       category_id: result.data.category_id,
-      user_id: user.id,
+      user_id: targetUserId,
     })
     .select()
     .single();
